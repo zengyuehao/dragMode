@@ -3,7 +3,7 @@
   <div id="app">
     <div class="box">
       <img v-for="(item,i) in dataList" :key="item.id" :data-index="i"
-      :src="item.src" alt="" @dragstart="handleDragStart" @dragend="handleDragEnd" @mousedown="handleMouseDown">
+      :src="item.src" alt="" @dragstart="handleDragStart"  @mousedown="handleMouseDown">
     </div>
     <div class="show" @dragenter="handleDragEnter" @dragover="handleDragOver"  @drop="handleDrop">
 
@@ -33,6 +33,7 @@ export default {
     }
   },
   methods: {
+    //获取图片距离浏览器边缘的距离 并且使用dataTransfer.setData将src值传向handleDrop函数中
     handleDragStart(e){
       console.log(e);
       var idx = e.target.dataset.index
@@ -43,6 +44,7 @@ export default {
       this.offsetY = img.offsetTop
       e.dataTransfer.setData('text',img.src)
     },
+    //用于在展示区中克隆新的图片并且通过dataTransfer.getData获取传过来的src值再赋予克隆的图片src，此时设置克隆图片的top 和 left
     handleDrop(e){
       var mysrc = e.dataTransfer.getData('text')
       var myimg = document.createElement('img')
@@ -54,23 +56,17 @@ export default {
       myimg.style.top = e.offsetY - this.StartY + this.offsetY + 'px'
       d2.appendChild(myimg)
     },
-    handleDragEnd(e) {
-      
-
-      this.chaX = Math.abs(this.startX - this.EndX)
-      this.chaY = Math.abs(this.StartY - this.EndY )
-
-
-    
-    },
+    //用于取消默认事件解除禁止小图标
     handleDragOver(e) {
       e.preventDefault();
       
     },
+    //用于取消默认事件解除禁止小图标
     handleDragEnter(e) {
 
       e.preventDefault();
     },
+    //鼠标点击时获取鼠标在图片上的位置 用于后边减去图片到浏览器边缘的距离。减得的结果为鼠标到图片的距离（offsetX - startX || offsetY - startY），这样我们就可以准确设置克隆图片的top 和 left
     handleMouseDown(e) {
       var cilentLeft  = document.documentElement.cilentLeft;
       console.log(cilentLeft);
